@@ -11,6 +11,9 @@ public class JwtProperties {
 
     private String secret;
     private String issuer;
+    private String key;
+    private long accessTokenExpire;
+    private long refreshTokenExpire;
 
     public JwtProperties() {}
 
@@ -28,5 +31,29 @@ public class JwtProperties {
 
     public void setIssuer(String issuer) {
         this.issuer = issuer;
+    }
+
+    public long getAccessTokenExpire() {
+        return accessTokenExpire;
+    }
+
+    public void setAccessTokenExpire(long accessTokenExpire) {
+        this.accessTokenExpire = accessTokenExpire;
+    }
+
+    public long getRefreshTokenExpire() {
+        return refreshTokenExpire;
+    }
+
+    public void setRefreshTokenExpire(long refreshTokenExpire) {
+        this.refreshTokenExpire = refreshTokenExpire;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

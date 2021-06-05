@@ -1,36 +1,30 @@
 package tr.com.ifikirli.sbrestapi.interceptor;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import tr.com.ifikirli.sbrestapi.exception.TokenException;
-import tr.com.ifikirli.sbrestapi.util.AuthUtil;
+import tr.com.ifikirli.sbrestapi.exception.AuthorizationException;
+import tr.com.ifikirli.sbrestapi.service.CustomerService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthInterceptor implements HandlerInterceptor {
+public class AuthorizationInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private AuthUtil authUtil;
+    private CustomerService customerService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String authHeader = request.getHeader("X-Authorization") != null ? request.getHeader("X-Authorization") : request.getHeader("Authorization") != null ? request.getHeader("Authorization") : null;
+        String username = request.getAttribute("username").toString();
 
-        if(authHeader == null)
-            throw new TokenException("Token does not exist in header");
+        if(username == null || !customerService.isAdministrator(username))
+            throw new AuthorizationException("You have no permission to operate this request");
 
-        else {
-
-            DecodedJWT decodedJWT = authUtil.verifyToken(authHeader);
-            request.setAttribute("username", decodedJWT.getSubject());
-            return true;
-        }
+        return true;
     }
 
     @Override

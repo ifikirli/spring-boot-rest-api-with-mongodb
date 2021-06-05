@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import tr.com.ifikirli.sbrestapi.response.CustomResponse;
 
+import javax.validation.ConstraintViolationException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +29,33 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(new CustomResponse<>("Bad Request", validationErrors), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<CustomResponse<String>> handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+
+        return new ResponseEntity<>(new CustomResponse<>(constraintViolationException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({TokenException.class})
     public ResponseEntity<CustomResponse<String>> handleTokenException(TokenException tokenException) {
 
         return new ResponseEntity<>(new CustomResponse<>(tokenException.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({BusinessException.class})
+    public ResponseEntity<CustomResponse<String>> handleBusinessException(BusinessException businessException) {
+
+        return new ResponseEntity<>(new CustomResponse<>(businessException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({AuthorizationException.class})
+    public ResponseEntity<CustomResponse<String>> handleAuthorizationException(AuthorizationException authorizationException) {
+
+        return new ResponseEntity<>(new CustomResponse<>(authorizationException.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({ParseException.class})
+    public ResponseEntity<CustomResponse<String>> handleParseException(ParseException parseException) {
+
+        return new ResponseEntity<>(new CustomResponse<>(parseException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
